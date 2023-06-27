@@ -8,9 +8,10 @@ export default function Vote() {
     const [voteOptions, setVoteOptions] = useState(localStorage.getItem(`${elementType}Selected`).split(','));
     const [rankSum, setRankSum] = useState(new Array(voteOptions.length).fill(0));
     const [voters, setVoters] = useState(localStorage.getItem('groupNames').split(','));
-    const [userRankings, setUserRankings] = useState({});
+    const [userRankings, setUserRankings] = useState('');
     const [groupRankings, setGroupRankings] = useState({});
     const [currVoterNum, setCurrVoterNum] = useState(0);
+    const [winner, setWinner] = useState('');
 
     /*
         groupRankings = {
@@ -27,23 +28,40 @@ export default function Vote() {
     */
 
     useEffect(() => {
-        initRank();    
-    },[]);
+        console.log('use effect');
+        
+    }, []);
 
-    const initRank = () => {
+    const clearRank = () => {
         let clearedRank = {};
         voteOptions.forEach(option => clearedRank[option] = '');
         setUserRankings(clearedRank);
     };
 
     const calculateWinner = () => {
-        //findMax();
-        console.log(`${elementType} will be calculated here`);
+        // call functions to calculate winner here
+        findHighestRank(); // sample function to find first option in list with highest rank sum and set as winner
+    };
+
+    const findHighestRank = () => {
+        let sortedRankSums = rankSum;
+        sortedRankSums.sort(function(a, b){return b - a});
+
+        let highestRank = sortedRankSums[0];
+        let highestIndex = rankSum.indexOf(highestRank);
+
+        setWinner(voteOptions[highestIndex]);
     };
 
     const submitVote = () => {
-        groupRankings[voters[currVoterNum]] = userRankings; 
-        initRank();
+        let currSum = rankSum;
+        voteOptions.forEach((option) => {
+            let optionIndex = voteOptions.indexOf(option);
+            currSum[optionIndex] += parseInt(userRankings[option]);
+        });
+        setRankSum(currSum);
+        setGroupRankings({...groupRankings, [voters[currVoterNum]] : userRankings}); 
+        clearRank();
         setCurrVoterNum(currVoterNum + 1);
 
     };
@@ -54,6 +72,11 @@ export default function Vote() {
     };
 
     const renderVoting = () => {
+
+        if (userRankings === '') {
+            clearRank();
+        }
+        
         if (currVoterNum < voters.length) {
             return (
                 <div>
@@ -67,11 +90,22 @@ export default function Vote() {
                 </div>
             );
         } else {
-            calculateWinner();
+
+            if (winner === '') {
+                calculateWinner();
+            }
+            
+            localStorage.setItem(`${elementType}Type`, winner);
+
+            return (
+                <WinnerDisplay 
+                    elementType={elementType}
+                    winner={winner}
+                />
+            );            
         }
 
     };
-
 
     return (
         <div>
@@ -82,6 +116,7 @@ export default function Vote() {
 }
 
 function VotingForm(props) {
+    // props = {submitVote, voteOptions, handleChange, formData
 
     return (
         <Container>
@@ -97,4 +132,29 @@ function VotingForm(props) {
         </Container>
     );
 
+}
+
+function WinnerDisplay(props) {
+    // props = {elementType, winner}
+
+    const handleChooseRes = () => { 
+        window.location.pathname = '/options/restaurant';
+    };
+
+    const handleOpenMenu = () => {
+        // ideally restaurant data will all be stored in local storage and can be parsed into an object
+        // hopefully can retrieve either menu or website data from api call and open link in new tab
+        window.open('https://google.com'); // placefiller
+    }
+
+    return (
+        <div>
+            <h3>{props.winner} won!!!</h3>
+            {(props.elementType === 'restaurant') ? (
+                <Button onClick={handleOpenMenu}>View Menu</Button>
+            ) : (
+                <Button onClick={handleChooseRes}>Pick a restaurant</Button>
+            )}
+        </div>
+    )
 }

@@ -9,10 +9,6 @@ export default function Home() {
     const [groupMembers, setGroupMembers] = useState({});
     const [groupMemberData, setGroupMemberData] = useState({});
 
-    // useEffect(() => {
-    //     console.log('use effect');
-    // }, [userNames]);
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setGroupMemberData({ ...groupMemberData, [name]: value });
@@ -31,9 +27,7 @@ export default function Home() {
         localStorage.setItem('groupNames', groupNames);
 
         window.location.pathname = '/options/cuisine';
-
     };
-
 
     return (
         <div>
@@ -60,22 +54,3 @@ export default function Home() {
         </div>
     );
 }
-
-// function GroupForm() {
-
-
-//     return (
-        // <Form>
-        //     <Form.Group controlId="usersNames" id="nameForm">
-        //         <Form.Control type="text" placeholder="name" />
-        //         <Form.Control type="text" placeholder="name" />
-        //     </Form.Group>
-        //     <Button onClick={addFormLine}>Add Group Member</Button>
-        // </Form>
-//     )
-// }
-
-// function addFormLine() {
-//     let userNamesForm = document.getElementById('nameForm');
-//     let new
-// }

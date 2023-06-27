@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 
 export default function Options() {
@@ -81,7 +80,7 @@ export default function Options() {
 }
 
 function ElementList(props) {
-
+    // props = {displayList, handleButtonClick, buttonIcon}
     // if restaurant options have additional fields, conditional can be added to display restaurant options/selected differently
 
     return (
