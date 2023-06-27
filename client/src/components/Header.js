@@ -1,10 +1,15 @@
 import React from 'react';
-import Row from 'react-bootstrap/Row';
+import Button from 'react-bootstrap/Button';
 
 export default function Header() {
+    const resetApp = () => {
+        localStorage.clear();
+        window.location.pathname = '/';
+    }
     return (
-        <Row>
+        <div className="d-flex justify-content-between p-3" style={{'backgroundColor': 'lightBlue'}}>
             <h1>Yelp For Couples</h1>
-        </Row>
+            <Button onClick={resetApp} className="d-flex align-self-center">Start Over</Button>
+        </div>
     );
 }
