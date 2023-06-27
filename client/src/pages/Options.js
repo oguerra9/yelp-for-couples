@@ -61,27 +61,35 @@ export default function Options() {
         <Container className="d-flex justify-content-center">
             <Col id="optionDisplay" className="col-lg-5">
                 <h4>{elementType} Options</h4>
-                <Container className="mb-2">
-                    {optionList.map(option => (
-                        <div key={option} className="d-flex mb-2">
-                            <Button id='optionButton' name={option} onClick={handleAddOption}>➕</Button>
-                            <h5 className="m-1">{option}</h5>                            
-                        </div>
-                    ))}
-                </Container>
+                <ElementList 
+                    displayList={optionList}
+                    handleButtonClick={handleAddOption}
+                    buttonIcon={'➕'}
+                />
             </Col>
             <Col id="selectedDisplay" className="col-lg-5">
                 <h4>Selected {elementType} Options</h4>
-                <Container className="mb-2">
-                    {selectedList.map(selected => (
-                        <div key={selected} className="d-flex mb-2">
-                            <Button id="optionButton" name={selected} onClick={handleRemoveSelected}>➖</Button>
-                            <h5 className="m-1">{selected}</h5>
-                        </div>
-                    ))}
-                </Container>
+                <ElementList 
+                    displayList={selectedList}
+                    handleButtonClick={handleRemoveSelected}
+                    buttonIcon={'➖'}
+                />
                 <Button onClick={submitSelected}>Let's Vote</Button>
             </Col>
+        </Container>
+    );
+}
+
+function ElementList(props) {
+
+    return (
+        <Container className="mb-2">
+            {(props.displayList).map(option => (
+                <div key={option} className="d-flex mb-2">
+                    <Button id="optionButton" name={option} onClick={props.handleButtonClick}>{props.buttonIcon}</Button>
+                    <h5 className="m-1">{option}</h5>                            
+                </div>
+            ))}
         </Container>
     );
 }
