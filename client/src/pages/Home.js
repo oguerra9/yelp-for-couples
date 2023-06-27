@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from 'react';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+
+export default function Home() {
+    const [userNames, setUserNames] = useState(['user0', 'user1']);
+    const [groupMembers, setGroupMembers] = useState({});
+    const [groupMemberData, setGroupMemberData] = useState({});
+
+    // useEffect(() => {
+    //     console.log('use effect');
+    // }, [userNames]);
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setGroupMemberData({ ...groupMemberData, [name]: value });
+    };
+
+    const addFormLine = (event) => {
+        event.preventDefault();
+
+        setUserNames([...userNames, `user${userNames.length}`]);   
+    };
+
+    const submitUserList = (event) => {
+        let groupNames = [];
+        userNames.forEach(user => groupNames.push(groupMemberData[user]));
+
+        localStorage.setItem('groupNames', groupNames);
+
+        window.location.pathname = '/options/cuisine';
+
+    };
+
+
+    return (
+        <div>
+            <div>
+                <h3>Welcome to Yelp for Couples</h3>
+                <h5>Enter your group members below to get started</h5>
+            </div>
+            <div>
+                <Form className="col-lg-6">
+                        <Container className="d-flex flex-wrap mb-2">
+                            {userNames.map(user => (
+                                <div className="col-lg-3" key={user}>
+                                    <Form.Control type="text" name={user} onChange={handleChange} value={groupMembers.user} placeholder="name" />
+                                </div>
+                            ))}
+                            <Button onClick={addFormLine}>+</Button>
+                        </Container>
+                    <Row>
+                        <Button onClick={submitUserList}>All Set!</Button>
+                    </Row>
+                </Form>
+            </div>
+            
+        </div>
+    );
+}
+
+// function GroupForm() {
+
+
+//     return (
+        // <Form>
+        //     <Form.Group controlId="usersNames" id="nameForm">
+        //         <Form.Control type="text" placeholder="name" />
+        //         <Form.Control type="text" placeholder="name" />
+        //     </Form.Group>
+        //     <Button onClick={addFormLine}>Add Group Member</Button>
+        // </Form>
+//     )
+// }
+
+// function addFormLine() {
+//     let userNamesForm = document.getElementById('nameForm');
+//     let new
+// }
