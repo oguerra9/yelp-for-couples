@@ -14,7 +14,7 @@ export default function Options() {
     
         console.log(`retrieving options for ${elementType}`);
         getOptions(elementType);
-    }, [])
+    }, []);
 
     const getOptions = (elementType) => {
         if (elementType === 'cuisine') {
@@ -81,6 +81,8 @@ export default function Options() {
 }
 
 function ElementList(props) {
+
+    // if restaurant options have additional fields, conditional can be added to display restaurant options/selected differently
 
     return (
         <Container className="mb-2">
