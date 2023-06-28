@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+
+#optionButton {
+  padding: 1%; 
+  display: flex;
+  align-self: center;
+  font-size: 8px;
+  border-radius: 50%;
+  background-color: lightblue;
+  border: 0px;
+}
