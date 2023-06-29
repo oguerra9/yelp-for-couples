@@ -33,8 +33,9 @@ export default function Home() {
 
         localStorage.setItem('groupNames', groupNames);
 
-        console.log(`custom location name = ${location}`);
-        if (location != '') {
+        
+        if (location != '📍Current Location') {
+            console.log(`saving custom location name = ${location}`);
             saveCustomLocation(location);
         }
 
@@ -42,38 +43,38 @@ export default function Home() {
     };
 
     const setCurrLocation = (event) => {
+        console.log('saving current location');
+        setLocation('📍Current Location');
         saveCurrentLocation();
     };
 
-    // const setCustomLocation = (event) => {
-    //     console.log(`custom location name = ${location}`);
-    //     if (location != '') {
-    //         saveCustomLocation(location);
-    //     }
-    // };
+
 
     return (
         <div>
-            <h3>Welcome to Yelp for Couples</h3>
+            <h2 className="mb-4">Welcome to Yelp for Couples</h2>
             <div className="d-flex justify-content-between">
-                <Col className="col-lg-5">
+                <Col className="col-lg-5 p-2">
                     <div>
-                        <h5>Enter your group members below to get started</h5>
+                        <h5>Enter your group members below</h5>
                     </div>
                     <div>
                         <Form>
                             <Container className="d-flex flex-wrap mb-2">
                                 {userNames.map(user => (
-                                    <div className="col-lg-3" key={user}>
-                                        <Form.Control type="text" name={user} onChange={handleChange} value={groupMembers.user} placeholder="name" />
+                                    <div className="col-lg-3 p-1" key={user}>
+                                        <Form.Control type="text" id="formTextLine" name={user} onChange={handleChange} value={groupMembers.user} placeholder="name" />
                                     </div>
                                 ))}
-                                <Button onClick={addFormLine}>+</Button>
+                                <div className="p-1 align-self-center">
+                                    <Button onClick={addFormLine}>+</Button>
+                                </div>
+                                
                             </Container>
                         </Form>
                     </div>
                 </Col>
-                <Col className="col-lg-5">
+                <Col className="col-lg-5 p-2">
                     <div>
                         <h5>Set your location</h5>
                     </div>
@@ -81,14 +82,16 @@ export default function Home() {
                         <Button onClick={setCurrLocation}>Use my current location</Button>
                         <Form className="d-flex">
                             <div className="col-lg-4">
-                                <Form.Control type="text" name="locationForm" onChange={handleLocationChange} value={location} placeholder="location" />
+                                <Form.Control type="text" id="formTextLine" name="locationForm" onChange={handleLocationChange} value={location} placeholder="location" />
                             </div>
                             {/* <Button onClick={setCustomLocation}>Set Location</Button> */}
                         </Form>
                     </div>
                 </Col>
             </div>
-            <Button onClick={submitSetUp}>All Set!</Button>
+            <div className="d-flex justify-content-center">
+                <Button onClick={submitSetUp} className="col-lg-4 d-flex justify-content-center mt-4">All Set!</Button>
+            </div>
         </div>
     );
 }
@@ -113,6 +116,6 @@ function saveCurrentLocation() {
 
 async function saveCustomLocation(locationName) {
     console.log(`saving custom location: ${locationName}`);
-    let customCoords = await getLocationCoords(locationName).then((response) => console.log(response));
-    localStorage.setItem('locationCoords', customCoords);
+    //let customCoords = await getLocationCoords(locationName).then((response) => console.log(response));
+    //localStorage.setItem('locationCoords', customCoords);
 }
