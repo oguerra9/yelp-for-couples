@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import { getLocationCoords } from '../services/APIService';
+import { getGeoId } from '../services/APIService';
 
 export default function Home() {
     const [userNames, setUserNames] = useState(['user0', 'user1']);
@@ -27,7 +27,7 @@ export default function Home() {
         setUserNames([...userNames, `user${userNames.length}`]);   
     };
 
-    const submitSetUp = (event) => {
+    const submitSetUp = async (event) => {
         let groupNames = [];
         userNames.forEach(user => groupNames.push(groupMemberData[user]));
 
@@ -36,10 +36,14 @@ export default function Home() {
         
         if (location != '📍Current Location') {
             console.log(`saving custom location name = ${location}`);
+            // await saveCustomLocation(location).then((response) => {
+            //     localStorage.setItem('locationId', response);
+            //     window.location.pathname = '/options/cuisine';
+            // });
             saveCustomLocation(location);
         }
 
-        window.location.pathname = '/options/cuisine';
+        
     };
 
     const setCurrLocation = (event) => {
@@ -79,12 +83,11 @@ export default function Home() {
                         <h5>Set your location</h5>
                     </div>
                     <div>
-                        <Button onClick={setCurrLocation}>Use my current location</Button>
+                        {/* <Button onClick={setCurrLocation}>Use my current location</Button> */}
                         <Form className="d-flex">
                             <div className="col-lg-4">
                                 <Form.Control type="text" id="formTextLine" name="locationForm" onChange={handleLocationChange} value={location} placeholder="location" />
                             </div>
-                            {/* <Button onClick={setCustomLocation}>Set Location</Button> */}
                         </Form>
                     </div>
                 </Col>
@@ -116,6 +119,11 @@ function saveCurrentLocation() {
 
 async function saveCustomLocation(locationName) {
     console.log(`saving custom location: ${locationName}`);
+    await getGeoId(locationName).then((response) => {
+        localStorage.setItem('locationId', response);
+        window.location.pathname = '/options/cuisine';
+        //return response;
+    });
     //let customCoords = await getLocationCoords(locationName).then((response) => console.log(response));
     //localStorage.setItem('locationCoords', customCoords);
 }
