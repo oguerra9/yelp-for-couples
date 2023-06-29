@@ -25,19 +25,11 @@ export default function Options() {
             // winning cuisine type will be decided first and stored in local storage
             let cuisineType = localStorage.getItem('cuisineType');
             // cuisine type to be retrieved from local storage and used in api call
+            //setLocation('Atlanta');
             getBusinesses();
             setOptionList([`${cuisineType} Restaurant #1`, `${cuisineType} Restaurant #2`, `${cuisineType} Restaurant #3`, `${cuisineType} Restaurant #4`]);
         }
     };
-
-    // const getRestaurants = () => {
-    //     const options = {method: 'GET', headers: {accept: 'application/json', Authorization: api_key, 'Access-Control-Allow-Origin': 'http://localhost:3000'}};
-
-    //     fetch('https://api.yelp.com/v3/businesses/search?sort_by=best_match&limit=20', options)
-    //         .then(response => response.json())
-    //         .then(response => console.log(response))
-    //         .catch(err => console.error(err));
-    // }
 
     const handleAddOption = (event) => {
         let addedOption = event.target.name;
