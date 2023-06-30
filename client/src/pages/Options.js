@@ -71,7 +71,7 @@ export default function Options() {
 
         unfilteredList.forEach((option) => {
             let dist = parseFloat(option.distance);
-            if ((dist > minDist) && (dist < maxDist)) {
+            if ((dist > minDist) && (dist < maxDist) && !selectedList.includes(option)) {
                 filteredOptions.push(option);
             }
         });
@@ -214,7 +214,10 @@ function ElementList(props) {
                                 <h3 className="m-1">{option.name}</h3> 
                                 <div className="d-flex">
                                     <p>{option.phone}</p>
-                                    <Button id="contactButton" onClick={goToWebsite} value={option.website}>🌐</Button>
+                                    {option.hasOwnProperty('website') ? (
+                                        <Button id="contactButton" onClick={goToWebsite} value={option.website}>🌐</Button>
+                                    ) : (<></>)}
+                                    
                                 </div>
                             </div>
                             {/* <p>{option.location_string}</p> 
