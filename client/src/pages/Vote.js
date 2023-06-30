@@ -78,7 +78,7 @@ export default function Vote() {
             clearRank();
         }
         
-        if (currVoterNum < voters.length) {
+        if (currVoterNum < voters.length && voteOptions.length > 1) {
             return (
                 <div>
                     <h5>{voters[currVoterNum]}'s turn to vote</h5>
@@ -92,7 +92,7 @@ export default function Vote() {
             );
         } else {
 
-            if (winner === '') {
+            if (winner === '' && voteOptions.length > 1) {
                 calculateWinner();
             }
 

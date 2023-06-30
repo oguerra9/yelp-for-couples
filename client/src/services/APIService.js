@@ -10,6 +10,7 @@ export async function getGeoId(locationName) {
 
     try {
         const response = await http.get('/locations/search', options);
+        console.log('response');
         console.log(response);
         let lat = response.data.data[0].result_object.latitude;
         let lon = response.data.data[0].result_object.longitude;
@@ -55,7 +56,7 @@ export async function getFilterData(locationId) {
         },
         headers: {
             'content-type': 'application/json',
-            'X-RapidAPI-Key': '652c01dd3emsh0215dfe5dc848f6p1d45d6jsn43f4c72bc42e',
+            'X-RapidAPI-Key': '8bd94b1fd1msha94f5193faa330fp1e5d6bjsn52affb54635b',
             'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
         },
         data: {
@@ -235,8 +236,8 @@ export async function reverseGeocode(coords) {
           'accept-language': 'en',
         },
         headers: {
-          'X-RapidAPI-Key': '652c01dd3emsh0215dfe5dc848f6p1d45d6jsn43f4c72bc42e',
-          'X-RapidAPI-Host': 'forward-reverse-geocoding.p.rapidapi.com'
+            'X-RapidAPI-Key': '8bd94b1fd1msha94f5193faa330fp1e5d6bjsn52affb54635b',
+            'X-RapidAPI-Host': 'forward-reverse-geocoding.p.rapidapi.com'
         }
       };
       
