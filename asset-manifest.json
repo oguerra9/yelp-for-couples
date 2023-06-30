@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/yelp-for-couples/static/css/main.13e47bd0.css",
-    "main.js": "/yelp-for-couples/static/js/main.a2e38b74.js",
+    "main.js": "/yelp-for-couples/static/js/main.90d06c46.js",
     "static/media/logo.svg": "/yelp-for-couples/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/yelp-for-couples/index.html",
     "main.13e47bd0.css.map": "/yelp-for-couples/static/css/main.13e47bd0.css.map",
-    "main.a2e38b74.js.map": "/yelp-for-couples/static/js/main.a2e38b74.js.map"
+    "main.90d06c46.js.map": "/yelp-for-couples/static/js/main.90d06c46.js.map"
   },
   "entrypoints": [
     "static/css/main.13e47bd0.css",
-    "static/js/main.a2e38b74.js"
+    "static/js/main.90d06c46.js"
   ]
 }
