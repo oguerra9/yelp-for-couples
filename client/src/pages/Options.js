@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
+import RestaurantDisplayLine from '../components/RestaurantDisplayLine';
 
 import { getRestaurantOptions, getCustomFilterOptions, getNearbyRestaurants } from '../services/APIService';
 
@@ -25,9 +26,13 @@ export default function Options() {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    
+    const handleShow = () => {
+        setShow(true);
+        console.log(priceOptions);
+    }
     const [filterOptions, setFilterOptions] = useState([]);
+
+    const [priceOptions, setPriceOptions] = useState([]);
 
     const [filterData, setFilterData] = useState({minDistance: '', maxDistance:'', minPrice:'', maxPrice:''});
 
@@ -55,9 +60,10 @@ export default function Options() {
             let restaurantOptions = await getRestaurantOptions(locationCoords, cuisineType.key);
             setOptionList(restaurantOptions);
             setUnfilteredList(restaurantOptions);
-            let priceOptions = getCustomFilterOptions(restaurantOptions, 'price_level');
-            console.log('priceOptions');
-            console.log(priceOptions);
+            let priceLevels = getCustomFilterOptions(restaurantOptions, 'price_level');
+            setPriceOptions(priceLevels);
+            console.log('priceLevels');
+            console.log(priceLevels);
         }
     };
 
@@ -126,42 +132,45 @@ export default function Options() {
 
     return (
         <>
-        <h4>Get started by adding all the options you want to vote on later to your group's list</h4>
-        {showAlert ? (
-            <Alert>Please add some options to your list.</Alert>
-        ) : (
-            <></>
-        )}
-        <div className="d-flex justify-content-around">
-            
-            <div id="optionDisplay" className="col-lg-5">
-                {(elementType === 'cuisine') ? (
-                    <h2>Cuisine Options</h2>
-                ) : (
-                    <div className='d-flex justify-content-between'>
-                        <h2>Restaurant Options</h2>
-                        <Button onClick={handleShow}>Filter</Button>
-                    </div>
-                )}
+        <div id="optionScreenCon" className="col-9">
+            <h4>Get started by adding all the options you want to vote on later</h4>
+            {showAlert ? (
+                <Alert>Please add some options to your list.</Alert>
+            ) : (
+                <></>
+            )}
+            <div className="d-flex justify-content-around">
                 
-                <ElementList 
-                    displayList={optionList}
-                    handleButtonClick={handleAddOption}
-                    buttonIcon={'➕'}
-                    elementType={elementType}
-                />
-            </div>
-            <div id="selectedDisplay" className="col-lg-5">
-                <h4>Selected {elementType} Options</h4>
-                <ElementList 
-                    displayList={selectedList}
-                    handleButtonClick={handleRemoveSelected}
-                    buttonIcon={'➖'}
-                    elementType={elementType}
-                />
-                <Button onClick={submitSelected}>Let's Vote</Button>
+                <div id="optionListCon">
+                    {(elementType === 'cuisine') ? (
+                        <h2>Cuisine Options</h2>
+                    ) : (
+                        <div className='d-flex justify-content-between'>
+                            <h2>Restaurant Options</h2>
+                            <Button id="pageButton" onClick={handleShow}>Filter</Button>
+                        </div>
+                    )}
+                    
+                    <ElementList 
+                        displayList={optionList}
+                        handleButtonClick={handleAddOption}
+                        buttonIcon={'➕'}
+                        elementType={elementType}
+                    />
+                </div>
+                <div id="optionListCon">
+                    <h4>Selected {elementType} Options</h4>
+                    <ElementList 
+                        displayList={selectedList}
+                        handleButtonClick={handleRemoveSelected}
+                        buttonIcon={'➖'}
+                        elementType={elementType}
+                    />
+                    <Button id="pageButton" onClick={submitSelected}>Let's Vote</Button>
+                </div>
             </div>
         </div>
+        
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -170,28 +179,36 @@ export default function Options() {
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-3" controlId="minDistance">
-                        <Form.Label>Minimum Distance</Form.Label>
-                        <Form.Control type="text" name="minDistance" onChange={handleChange} value={filterData.minDistance} placeholder="Minimum Distance" />
+                        <div className="d-flex justify-content-between">
+                            <Form.Label className="m-2 pt-2">Distance</Form.Label>
+                            <div className="d-flex">
+                                <Form.Control id="filterTextBox" className="m-2" type="text" name="minDistance" onChange={handleChange} value={filterData.minDistance} placeholder="min" />
+                                <p className="align-self-center pt-3">-</p>
+                                <Form.Control id="filterTextBox" className="m-2" type="text" name="maxDistance" onChange={handleChange} value={filterData.maxDistance} placeholder="max" />
+                            </div>
+                        </div>
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="maxDistance">
+                    {/* <Form.Group className="mb-3" controlId="maxDistance">
                         <Form.Label>Maximum Distance</Form.Label>
-                        <Form.Control type="text" name="maxDistance" onChange={handleChange} value={filterData.maxDistance} placeholder="Maximum Distance" />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="minPrice">
+                    </Form.Group> */}
+                    {/* <Form.Group className="mb-3" controlId="minPrice">
+                        <Form.Label>Price Options</Form.Label>
+                    </Form.Group> */}
+                    {/* <Form.Group className="mb-3" controlId="minPrice">
                         <Form.Label>Minimum Price</Form.Label>
                         <Form.Control type="text" name="minPrice" onChange={handleChange} value={filterData.minPrice} placeholder="Minimum Price" />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="maxPrice">
                         <Form.Label>Maximum Price</Form.Label>
                         <Form.Control type="text" name="maxPrice" onChange={handleChange} value={filterData.maxPrice} placeholder="Maximum Price" />
-                    </Form.Group>
+                    </Form.Group> */}
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button id="pageButton" onClick={handleClose}>
                     Close
                 </Button>
-                <Button variant="primary" onClick={saveFilters}>
+                <Button id="pageButton" onClick={saveFilters}>
                     Apply Filters
                 </Button>
             </Modal.Footer>
@@ -226,8 +243,9 @@ function ElementList(props) {
             <div className="m-0">
                 {(props.displayList).map((option, index) => (
                     <div key={option.location_id} className="d-flex mb-2">
-                        <Button className="m-1" name={index} onClick={props.handleButtonClick}>{props.buttonIcon}</Button>
-                        <div className="d-flex justify-content-between">
+                        <Button id="pageButton" className="m-1" name={index} onClick={props.handleButtonClick}>{props.buttonIcon}</Button>
+                        <RestaurantDisplayLine restaurantData={option} />
+                        {/* <div className="d-flex justify-content-between">
                             <div className="d-flex flex-column">
                                 <h3 className="m-1">{option.name}</h3> 
                                 <div className="d-flex">
@@ -238,15 +256,15 @@ function ElementList(props) {
                                     
                                 </div>
                             </div>
-                            {/* <p>{option.location_string}</p> 
+                            <p>{option.location_string}</p> 
                             <p>{option.rating}⭐</p>
-                            <p>{option.distance_string}</p> */}
+                            <p>{option.distance_string}</p> 
                             <div className="d-flex flex-column">
                                 <p>{option.price_level}</p>
                                 <p>{option.open_now_text}</p>
                             </div>
                             
-                        </div>
+                        </div> */}
                                                   
                     </div>
                 ))}

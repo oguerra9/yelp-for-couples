@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import RestaurantDisplayLine from '../components/RestaurantDisplayLine';
 
 export default function Vote() {
     const [elementType, setElementType] = useState(window.location.pathname.split('/')[2]);
@@ -13,25 +15,12 @@ export default function Vote() {
     const [currVoterNum, setCurrVoterNum] = useState(0);
     const [winner, setWinner] = useState('');
 
-    /*
-        groupRankings = {
-            voters[0]: userRankings,
-            voters[1]: userRankings,
-            ...,
-            voters[currVoterNum]: userRankings
-        }
-        userRankings = {
-            voteOptions[0]: 0,
-            voteOptions[1]: 1,
-            ...
-        }
-    */
 
-    const clearRank = () => {
-        let clearedRank = {};
-        voteOptions.forEach(option => clearedRank[option.name] = '');
-        setUserRankings(clearedRank);
-    };
+    // const clearRank = () => {
+    //     let clearedRank = {};
+    //     voteOptions.forEach(option => clearedRank[option.name] = '');
+    //     setUserRankings(clearedRank);
+    // };
 
     const calculateWinner = () => {
         // call functions to calculate winner here
@@ -42,7 +31,7 @@ export default function Vote() {
         console.log(rankSum);
         let sortedRankSums = [];
         rankSum.forEach((num) => sortedRankSums.push(num));
-        sortedRankSums.sort(function(a, b){return b - a});
+        sortedRankSums.sort(function(a, b){return a - b});
 
         let highestRank = sortedRankSums[0];
         let highestIndex = rankSum.indexOf(highestRank);
@@ -50,51 +39,53 @@ export default function Vote() {
         setWinner(voteOptions[highestIndex]);
     };
 
-    const submitVote = () => {
+    const submitVote = (newRanking) => {
+        console.log(newRanking);
+        setUserRankings(newRanking);
+
+        console.log(`user rankings`);
+        console.log(userRankings);
+
         let currSum = rankSum;
-        console.log(rankSum);
-        console.log(`user rankings: ${JSON.stringify(userRankings)}`);
+
         for (let i = 0; i < voteOptions.length; i++) {
             let option = voteOptions[i];
             console.log(`option`);
             console.log(option);
-            currSum[i] += parseInt(userRankings[option.name])
+            currSum[i] += newRanking.indexOf(option);
         }
+
         console.log(currSum);
+
         setRankSum(currSum);
-        setGroupRankings({...groupRankings, [voters[currVoterNum]] : userRankings}); 
-        clearRank();
         setCurrVoterNum(currVoterNum + 1);
-
-    };
-
-    const handleChange = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
-        setUserRankings({ ...userRankings, [name]: value });
 
     };
 
     const renderVoting = () => {
 
-        if (userRankings === '' && Array.isArray(voteOptions)) {
-            clearRank();
-        }
+        // if (userRankings === '' && Array.isArray(voteOptions)) {
+        //     clearRank();
+        // }
         
         if (currVoterNum < voters.length && Array.isArray(voteOptions)) {
             console.log(`vote options`);
             console.log(voteOptions);
 
             return (
-                <div>
-                    <h4>{voters[currVoterNum]}'s turn to vote</h4>
-                    
-                    <VotingForm 
-                        submitVote={submitVote} 
-                        voteOptions={voteOptions} 
-                        handleChange={handleChange}
-                        formData={userRankings}
-                    />
+                <div id="voteScreenCon" className="col-6">
+                    <h3>Time to Vote!</h3>
+                    <div id="voteFormDiv" className="p-3">
+                        <h4 className="align-self-center">{voters[currVoterNum]}'s turn to vote</h4>
+                        
+                        <VotingForm 
+                            submitVote={submitVote} 
+                            voteOptions={voteOptions} 
+                            
+                            formData={userRankings}
+                            elementType={elementType}
+                        />
+                    </div>
                 </div>
             );
         } else {
@@ -125,46 +116,81 @@ export default function Vote() {
     }
 
     return (
-        <div>
-            <h3>Time to Vote!</h3>
-            
+        <>
             {renderVoting()}
-        </div>
+        </>
     );
 }
 
+
+
 function VotingForm(props) {
     // props = {submitVote, voteOptions, handleChange, formData
-    console.log(`form data`);
-    console.log(props.formData);
 
-    let rankNums = Array.from({ length: (props.voteOptions.length) }, (value, index) => (index + 1));
+    const [optionList, setOptionList] = useState(props.voteOptions);
+
+
+    const handleOnDragEnd = (result) => {
+        console.log(result);
+        if (!result.destination) return;
+
+        const items = Array.from(optionList);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+
+        setOptionList(items);
+        console.log(items);
+    }
+
+    const sendVote = () => {
+        console.log(optionList);
+        props.submitVote(optionList);
+    }
 
     return (
-        <Container>
-            <h5 className="mb-3">Rank your options with your favorite at {props.voteOptions.length} and your least favorite at 1</h5>
-            <Form>
-                {(props.voteOptions).map(option => (
-                    <Form.Group 
-                        className="mb-3" 
-                        key={option.value} 
-                        controlId={`${option.name}Rank`}
-                    >
-                        <div className="d-flex">
-                            <Form.Select name={option.name} value={props.formData[option.name]} onChange={props.handleChange}>
-                                <option> </option>
-                                {(rankNums).map(num => (
-                                    <option key={num} value={num} name={option.name}>{num}</option>
-                                ))}
-                                
-                            </Form.Select>
-                            <Form.Label className="m-0 col-lg-11">{option.name}</Form.Label>
-                        </div>
-                    </Form.Group>
-                ))}
-                <Button onClick={props.submitVote}>Submit Vote</Button>
-            </Form>
-        </Container>
+        <div className="p-2">
+            <h5 className="mb-3">Drag your options in order with your favorite at the top</h5>
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId="optionList">
+                    {(provided) => (
+                    <ul {...provided.droppableProps} ref={provided.innerRef} id="restaurantDisplayLine">
+                        {(props.elementType === 'cuisine') ? (
+                            <>
+                                {optionList.map((option, index) => {
+                                    return (
+                                        <Draggable key={option.key} draggableId={option.key} index={index}>
+                                        {(provided) => (
+                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                <h5>{option.name}</h5>
+                                            </div>
+                                        )}
+                                        </Draggable>
+                                    );
+                                })}
+                            </>
+                        ) : (
+                            <>
+                            {optionList.map((option, index) => {
+                                return (
+                                    <Draggable key={option.location_id} draggableId={option.location_id} index={index}>
+                                    {(provided) => (
+                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                            <RestaurantDisplayLine restaurantData={option} />
+                                        </div>
+                                    )}
+                                    </Draggable>
+                                );
+                            })}
+                            </>
+                        )}
+                        
+                        {provided.placeholder}
+                    </ul>
+                    )}
+                </Droppable>
+            </DragDropContext>
+            <Button id="pageButton" onClick={sendVote}>Submit Vote</Button>
+        </div>
     );
 
 }
@@ -183,12 +209,12 @@ function WinnerDisplay(props) {
     }
 
     return (
-        <div>
-            <h3>{props.winner.name} won!!!</h3>
+        <div id="voteScreenCon" className="col-6">
+            <h3 className="mb-2">{props.winner.name} won!!!</h3>
             {(props.elementType === 'restaurant') ? (
-                <Button onClick={handleOpenWebsite} value={props.winner.website}>Open Website</Button>
+                <Button id="pageButton" className="col-4 align-self-center mt-3" onClick={handleOpenWebsite} value={props.winner.website}>Open Website</Button>
             ) : (
-                <Button onClick={handleChooseRes}>Pick a restaurant</Button>
+                <Button id="pageButton" className="col-4 align-self-center mt-3" onClick={handleChooseRes}>Pick a restaurant</Button>
             )}
         </div>
     )
