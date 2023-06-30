@@ -16,15 +16,15 @@ function App() {
         <div id="routeCon">
           <Routes>
             <Route 
-              path="/" 
+              path="/yelp-for-couples/" 
               element={<Home />} 
             />
             <Route 
-              path="/options/:type" 
+              path="/yelp-for-couples/options/:type" 
               element={<Options />} 
             />
             <Route 
-              path="/vote/:type" 
+              path="/yelp-for-couples/vote/:type" 
               element={<Vote />} 
             />
           </Routes>
