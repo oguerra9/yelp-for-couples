@@ -32,8 +32,8 @@ export default function Options() {
     useEffect(async () => {
     
         console.log(`retrieving options for ${elementType}`);
-        getOptions(elementType);
-        setSelectedList([]);
+        //getOptions(elementType);
+        //setSelectedList([]);
         
     }, []);
 
@@ -118,10 +118,10 @@ export default function Options() {
         <div className="d-flex justify-content-around">
             <div id="optionDisplay" className="col-lg-5">
                 {(elementType === 'cuisine') ? (
-                    <h4>Cuisine Options</h4>
+                    <h2>Cuisine Options</h2>
                 ) : (
                     <div className='d-flex justify-content-between'>
-                        <h4>Restaurant Options</h4>
+                        <h2>Restaurant Options</h2>
                         <Button onClick={handleShow}>Filter</Button>
                     </div>
                 )}

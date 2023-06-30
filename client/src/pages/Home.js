@@ -56,8 +56,8 @@ export default function Home() {
     return (
         <div>
             <h2 className="mb-4">Welcome to Yelp for Couples</h2>
-            <div className="d-flex justify-content-between">
-                <Col className="col-lg-5 p-2">
+            <div className="d-flex justify-content-around">
+                <Col className="col-lg-5 p-3" style={{'border':'1px solid black'}}>
                     <div>
                         <h5>Enter your group members below</h5>
                     </div>
@@ -77,15 +77,16 @@ export default function Home() {
                         </Form>
                     </div>
                 </Col>
-                <Col className="col-lg-5 p-2">
+                <Col className="col-lg-5 p-3" style={{'border':'1px solid black'}}>
                     <div>
                         <h5>Set your location</h5>
                     </div>
-                    <div>
-                        <Button onClick={setCurrLocation}>Use my current location</Button>
+                    <div className="d-flex">
+                        <Button onClick={setCurrLocation} className="p-2">Use my current location</Button>
+                        <div className="m-2">OR</div>
                         <Form className="d-flex">
-                            <div className="col-lg-4">
-                                <Form.Control type="text" id="formTextLine" name="locationForm" onChange={handleLocationChange} value={location} placeholder="location" />
+                            <div>
+                                <Form.Control type="text" id="formTextLine" name="locationForm" onChange={handleLocationChange} value={location} placeholder="Enter Custom Location" />
                             </div>
                         </Form>
                     </div>
@@ -112,8 +113,9 @@ async function saveCurrentLocation() {
             console.log(`location name = ${response}`);
             return response;
         });
-
+        console.log(locationName);
         await getGeoId(locationName).then((response) => {
+            console.log(response);
             localStorage.setItem('locationId', response.locationId);
             window.location.pathname = '/options/cuisine';
         });
