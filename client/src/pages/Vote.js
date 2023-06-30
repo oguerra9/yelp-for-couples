@@ -8,7 +8,7 @@ import RestaurantDisplayLine from '../components/RestaurantDisplayLine';
 export default function Vote(props) {
     const [elementType, setElementType] = useState(localStorage.getItem('pathname').split('/')[2]);
     const [voteOptions, setVoteOptions] = useState(JSON.parse(localStorage.getItem(`${elementType}Selected`)));
-    const [rankSum, setRankSum] = useState([]);
+    const [rankSum, setRankSum] = useState(new Array(voteOptions.length).fill(0));
     const [voters, setVoters] = useState(localStorage.getItem('groupNames').split(','));
     const [userRankings, setUserRankings] = useState('');
     const [groupRankings, setGroupRankings] = useState({});
