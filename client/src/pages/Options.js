@@ -4,10 +4,9 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
 
-import { getFilterOptions, getRestaurantOptions, findFilterOptions, getCustomFilterOptions, getNearbyRestaurants } from '../services/APIService';
-import RangeSlider from 'react-range-slider-input';
-import 'react-range-slider-input/dist/style.css';
+import { getRestaurantOptions, getCustomFilterOptions, getNearbyRestaurants } from '../services/APIService';
 
 export default function Options() {
 
@@ -15,9 +14,12 @@ export default function Options() {
     const [unfilteredList, setUnfilteredList] = useState([]);
     const [selectedList, setSelectedList] = useState([]);
 
+    const [showAlert, setShowAlert] = useState(false);
+    const handleShowAlert = () => setShowAlert(true);
+    const handleHideAlert = () => setShowAlert(false);
+
     const [elementType, setElementType] = useState(window.location.pathname.split('/')[2]);
 
-    const [locationId, setLocationId] = useState(localStorage.getItem('locationId'));
     const [locationCoords, setLocationCoords] = useState(localStorage.getItem('locationCoords').split(','));
 
     const [show, setShow] = useState(false);
@@ -32,8 +34,8 @@ export default function Options() {
     useEffect(async () => {
     
         console.log(`retrieving options for ${elementType}`);
-        //getOptions(elementType);
-        //setSelectedList([]);
+        getOptions(elementType);
+        setSelectedList([]);
         
     }, []);
 
@@ -50,7 +52,7 @@ export default function Options() {
             
         } else if (elementType === 'restaurant') {
             let cuisineType = JSON.parse(localStorage.getItem('cuisineType'));
-            let restaurantOptions = await getRestaurantOptions(locationCoords, cuisineType.value);
+            let restaurantOptions = await getRestaurantOptions(locationCoords, cuisineType.key);
             setOptionList(restaurantOptions);
             setUnfilteredList(restaurantOptions);
             let priceOptions = getCustomFilterOptions(restaurantOptions, 'price_level');
@@ -102,10 +104,19 @@ export default function Options() {
     };
 
     const submitSelected = (event) => {
-        console.log(JSON.stringify(selectedList));
-        localStorage.setItem(`${elementType}Selected`, JSON.stringify(selectedList));
+        if (selectedList.length === 0) {
+            //display warning
+            handleShowAlert();
+        } else if (selectedList.length === 1) {
+            localStorage.setItem(`${elementType}Type`, JSON.stringify(selectedList));
+            window.location.pathname = `/vote/${elementType}`;
+        } else {
+            console.log(JSON.stringify(selectedList));
+            localStorage.setItem(`${elementType}Selected`, JSON.stringify(selectedList));
 
-        window.location.pathname = `/vote/${elementType}`;
+            window.location.pathname = `/vote/${elementType}`;
+        }
+        
     }
 
     const handleChange = (event) => {
@@ -115,7 +126,14 @@ export default function Options() {
 
     return (
         <>
+        <h4>Get started by adding all the options you want to vote on later to your group's list</h4>
+        {showAlert ? (
+            <Alert>Please add some options to your list.</Alert>
+        ) : (
+            <></>
+        )}
         <div className="d-flex justify-content-around">
+            
             <div id="optionDisplay" className="col-lg-5">
                 {(elementType === 'cuisine') ? (
                     <h2>Cuisine Options</h2>

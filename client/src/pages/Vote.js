@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 export default function Vote() {
     const [elementType, setElementType] = useState(window.location.pathname.split('/')[2]);
     const [voteOptions, setVoteOptions] = useState(JSON.parse(localStorage.getItem(`${elementType}Selected`)));
-    const [rankSum, setRankSum] = useState(new Array(voteOptions.length).fill(0));
+    const [rankSum, setRankSum] = useState([]);
     const [voters, setVoters] = useState(localStorage.getItem('groupNames').split(','));
     const [userRankings, setUserRankings] = useState('');
     const [groupRankings, setGroupRankings] = useState({});
@@ -29,6 +29,17 @@ export default function Vote() {
 
     useEffect(() => {
         console.log('use effect');
+
+        // if (voteOptions.length > 1) {
+        //     setRankSum(new Array(voteOptions.length).fill(0));
+        // } else {
+        //     return (
+        //         <WinnerDisplay 
+        //             elementType={elementType}
+        //             winner={winner}
+        //         />
+        //     );      
+        // }
         
     }, []);
 
@@ -44,6 +55,7 @@ export default function Vote() {
     };
 
     const findHighestRank = () => {
+        console.log(rankSum);
         let sortedRankSums = [];
         rankSum.forEach((num) => sortedRankSums.push(num));
         sortedRankSums.sort(function(a, b){return b - a});
@@ -56,6 +68,7 @@ export default function Vote() {
 
     const submitVote = () => {
         let currSum = rankSum;
+        console.log(`user rankings: ${JSON.stringify(userRankings)}`);
         for (let i = 0; i < voteOptions.length; i++) {
             let option = voteOptions[i];
             currSum[i] += parseInt(userRankings[option.name])
@@ -68,20 +81,31 @@ export default function Vote() {
     };
 
     const handleChange = (event) => {
-        const { name, value } = event.target;
+        //console.log(event.target);
+        const name = event.target.name;
+        const value = event.target.value;
+        //const { name, value } = event.target;
         setUserRankings({ ...userRankings, [name]: value });
+
+        console.log(`user = ${currVoterNum}`);
+        console.log(`name = ${name}`);
+        console.log(`value = ${value}`);
     };
 
     const renderVoting = () => {
 
-        if (userRankings === '') {
+        if (userRankings === '' && Array.isArray(voteOptions)) {
             clearRank();
         }
         
-        if (currVoterNum < voters.length && voteOptions.length > 1) {
+        if (currVoterNum < voters.length && Array.isArray(voteOptions)) {
+            console.log(`vote options`);
+            console.log(voteOptions);
+
             return (
                 <div>
-                    <h5>{voters[currVoterNum]}'s turn to vote</h5>
+                    <h4>{voters[currVoterNum]}'s turn to vote</h4>
+                    
                     <VotingForm 
                         submitVote={submitVote} 
                         voteOptions={voteOptions} 
@@ -92,7 +116,7 @@ export default function Vote() {
             );
         } else {
 
-            if (winner === '' && voteOptions.length > 1) {
+            if (winner === '' && Array.isArray(voteOptions)) {
                 calculateWinner();
             }
 
@@ -108,9 +132,19 @@ export default function Vote() {
 
     };
 
+    if (!Array.isArray(voteOptions)) {
+        return (
+            <WinnerDisplay 
+                elementType={elementType}
+                winner={(JSON.parse(localStorage.getItem(`${elementType}Type`)))[0]}
+            />
+        );      
+    }
+
     return (
         <div>
-            <h4>Time to Vote!</h4>
+            <h3>Time to Vote!</h3>
+            
             {renderVoting()}
         </div>
     );
@@ -119,13 +153,30 @@ export default function Vote() {
 function VotingForm(props) {
     // props = {submitVote, voteOptions, handleChange, formData
 
+    let rankNums = Array.from({ length: (props.voteOptions.length) }, (value, index) => (index + 1));
+
     return (
         <Container>
+            <h5 className="mb-3">Rank your options with your favorite at {props.voteOptions.length} and your least favorite at 1</h5>
             <Form>
                 {(props.voteOptions).map(option => (
-                    <Form.Group className="mb-3" key={option.value} controlId={`${option.name}Rank`}>
-                        <Form.Label>{option.name}</Form.Label>
-                        <Form.Control type="text" placeholder="" name={option.name} value={(props.formData)[option.name]} onChange={props.handleChange} />
+                    <Form.Group 
+                        className="mb-3" 
+                        key={option.value} 
+                        controlId={`${option.name}Rank`}
+                        value={props.formData[option.name]}
+                        onChange={props.handleChange}
+                    >
+                        <div className="d-flex">
+                            <Form.Select name={option.name}>
+                                <option> </option>
+                                {(rankNums).map(index => (
+                                    <option key={index} value={index} name={option.name}>{index}</option>
+                                ))}
+                                
+                            </Form.Select>
+                            <Form.Label className="m-0 col-lg-11">{option.name}</Form.Label>
+                        </div>
                     </Form.Group>
                 ))}
                 <Button onClick={props.submitVote}>Submit Vote</Button>
