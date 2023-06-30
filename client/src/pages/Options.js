@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
+import RestaurantDisplayLine from '../components/RestaurantDisplayLine';
 
 import { getRestaurantOptions, getCustomFilterOptions, getNearbyRestaurants } from '../services/APIService';
 
@@ -131,7 +132,7 @@ export default function Options() {
 
     return (
         <>
-        <div id="optionScreenCon" className="col-8">
+        <div id="optionScreenCon" className="col-9">
             <h4>Get started by adding all the options you want to vote on later</h4>
             {showAlert ? (
                 <Alert>Please add some options to your list.</Alert>
@@ -243,7 +244,8 @@ function ElementList(props) {
                 {(props.displayList).map((option, index) => (
                     <div key={option.location_id} className="d-flex mb-2">
                         <Button id="pageButton" className="m-1" name={index} onClick={props.handleButtonClick}>{props.buttonIcon}</Button>
-                        <div className="d-flex justify-content-between">
+                        <RestaurantDisplayLine restaurantData={option} />
+                        {/* <div className="d-flex justify-content-between">
                             <div className="d-flex flex-column">
                                 <h3 className="m-1">{option.name}</h3> 
                                 <div className="d-flex">
@@ -254,15 +256,15 @@ function ElementList(props) {
                                     
                                 </div>
                             </div>
-                            {/* <p>{option.location_string}</p> 
+                            <p>{option.location_string}</p> 
                             <p>{option.rating}⭐</p>
-                            <p>{option.distance_string}</p> */}
+                            <p>{option.distance_string}</p> 
                             <div className="d-flex flex-column">
                                 <p>{option.price_level}</p>
                                 <p>{option.open_now_text}</p>
                             </div>
                             
-                        </div>
+                        </div> */}
                                                   
                     </div>
                 ))}

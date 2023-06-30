@@ -59,6 +59,7 @@
   padding: 0;
   margin-bottom: auto;
   align-self: center;
+  background-color: gray;
 }
 
 #filterTextBox {
@@ -149,4 +150,10 @@
   border: 1px solid aliceblue;
   border-radius: 25px;
   background-color: aliceblue;
+}
+
+#restaurantDisplayLine {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
