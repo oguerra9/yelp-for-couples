@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 
 export default function Vote() {
     const [elementType, setElementType] = useState(window.location.pathname.split('/')[2]);
-    const [voteOptions, setVoteOptions] = useState(localStorage.getItem(`${elementType}Selected`).split(','));
+    const [voteOptions, setVoteOptions] = useState(JSON.parse(localStorage.getItem(`${elementType}Selected`)));
     const [rankSum, setRankSum] = useState(new Array(voteOptions.length).fill(0));
     const [voters, setVoters] = useState(localStorage.getItem('groupNames').split(','));
     const [userRankings, setUserRankings] = useState('');
@@ -34,7 +34,7 @@ export default function Vote() {
 
     const clearRank = () => {
         let clearedRank = {};
-        voteOptions.forEach(option => clearedRank[option] = '');
+        voteOptions.forEach(option => clearedRank[option.name] = '');
         setUserRankings(clearedRank);
     };
 
@@ -44,7 +44,8 @@ export default function Vote() {
     };
 
     const findHighestRank = () => {
-        let sortedRankSums = rankSum;
+        let sortedRankSums = [];
+        rankSum.forEach((num) => sortedRankSums.push(num));
         sortedRankSums.sort(function(a, b){return b - a});
 
         let highestRank = sortedRankSums[0];
@@ -55,10 +56,10 @@ export default function Vote() {
 
     const submitVote = () => {
         let currSum = rankSum;
-        voteOptions.forEach((option) => {
-            let optionIndex = voteOptions.indexOf(option);
-            currSum[optionIndex] += parseInt(userRankings[option]);
-        });
+        for (let i = 0; i < voteOptions.length; i++) {
+            let option = voteOptions[i];
+            currSum[i] += parseInt(userRankings[option.name])
+        }
         setRankSum(currSum);
         setGroupRankings({...groupRankings, [voters[currVoterNum]] : userRankings}); 
         clearRank();
@@ -94,8 +95,8 @@ export default function Vote() {
             if (winner === '') {
                 calculateWinner();
             }
-            
-            localStorage.setItem(`${elementType}Type`, winner);
+
+            localStorage.setItem(`${elementType}Type`, JSON.stringify(winner));
 
             return (
                 <WinnerDisplay 
@@ -122,9 +123,9 @@ function VotingForm(props) {
         <Container>
             <Form>
                 {(props.voteOptions).map(option => (
-                    <Form.Group className="mb-3" key={option} controlId={`${option}Rank`}>
-                        <Form.Label>{option}</Form.Label>
-                        <Form.Control type="text" placeholder="" name={option} value={(props.formData)[option]} onChange={props.handleChange} />
+                    <Form.Group className="mb-3" key={option.value} controlId={`${option.name}Rank`}>
+                        <Form.Label>{option.name}</Form.Label>
+                        <Form.Control type="text" placeholder="" name={option.name} value={(props.formData)[option.name]} onChange={props.handleChange} />
                     </Form.Group>
                 ))}
                 <Button onClick={props.submitVote}>Submit Vote</Button>
@@ -141,17 +142,17 @@ function WinnerDisplay(props) {
         window.location.pathname = '/options/restaurant';
     };
 
-    const handleOpenMenu = () => {
+    const handleOpenMenu = (event) => {
         // ideally restaurant data will all be stored in local storage and can be parsed into an object
         // hopefully can retrieve either menu or website data from api call and open link in new tab
-        window.open('https://google.com'); // placefiller
+        window.open(event.target.value); // placefiller
     }
 
     return (
         <div>
-            <h3>{props.winner} won!!!</h3>
+            <h3>{props.winner.name} won!!!</h3>
             {(props.elementType === 'restaurant') ? (
-                <Button onClick={handleOpenMenu}>View Menu</Button>
+                <Button onClick={handleOpenMenu} value={props.winner.website}>Open Website</Button>
             ) : (
                 <Button onClick={handleChooseRes}>Pick a restaurant</Button>
             )}

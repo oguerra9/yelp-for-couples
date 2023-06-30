@@ -47,3 +47,16 @@
   background-color: lightblue;
   border: 0px;
 }
+
+#formTextLine {
+  margin: 3px;
+  background-color: rgb(171, 171, 171);
+  border: 1px solid rgb(93, 93, 93);
+}
+
+#contactButton {
+  display: flex;
+  padding: 0;
+  margin-bottom: auto;
+  align-self: center;
+}
