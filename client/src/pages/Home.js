@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
+import Alert from 'react-bootstrap/Alert';
 import { getGeoId, reverseGeocode } from '../services/APIService';
 
 export default function Home() {
@@ -11,15 +12,31 @@ export default function Home() {
     const [groupMembers, setGroupMembers] = useState({});
     const [groupMemberData, setGroupMemberData] = useState({});
     const [location, setLocation] = useState('');
+    const [maxDistance, setMaxDistance] = useState('');
+    const [distanceUnits, setDistanceUnits] = useState('');
+
+    const [showLocationAlert, setShowLocationAlert] = useState(false);
+    const handleShowLocationAlert = () => setShowLocationAlert(true);
+    const handleHideLocationAlert = () => setShowLocationAlert(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
         setGroupMemberData({ ...groupMemberData, [name]: value });
     };
 
+    const handleChangeUnits = (event) => {
+        console.log(event.target.value);
+        setDistanceUnits(event.target.value);
+    }
+
     const handleLocationChange = (event) => {
         setLocation(event.target.value);
     };
+
+    const handleDistanceChange = (event) => {
+
+        setMaxDistance(event.target.value);
+    }
 
     const addFormLine = (event) => {
         event.preventDefault();
@@ -32,9 +49,12 @@ export default function Home() {
         userNames.forEach(user => groupNames.push(groupMemberData[user]));
 
         localStorage.setItem('groupNames', groupNames);
+        localStorage.setItem('distanceUnits', distanceUnits);
+        localStorage.setItem('maxDistance', maxDistance);
 
-        
-        if (location === '📍Current Location') {
+        if (location === '') {
+            handleShowLocationAlert();
+        } else if (location === '📍Current Location') {
             saveCurrentLocation();
         } else {
             console.log(`saving custom location name = ${location}`);
@@ -54,10 +74,10 @@ export default function Home() {
 
 
     return (
-        <div>
+        <div id="welcomeScreenCon" className="col-8">
             <h2 className="mb-4">Welcome to Yelp for Couples</h2>
             <div className="d-flex justify-content-around">
-                <Col className="col-lg-5 p-3" style={{'border':'1px solid black'}}>
+                <Col id="setupCon" className="p-3">
                     <div>
                         <h5>Enter your group members below</h5>
                     </div>
@@ -70,30 +90,63 @@ export default function Home() {
                                     </div>
                                 ))}
                                 <div className="p-1 align-self-center">
-                                    <Button onClick={addFormLine}>+</Button>
+                                    <Button id="pageButton" onClick={addFormLine}>+</Button>
                                 </div>
                                 
                             </Container>
                         </Form>
                     </div>
                 </Col>
-                <Col className="col-lg-5 p-3" style={{'border':'1px solid black'}}>
-                    <div>
-                        <h5>Set your location</h5>
+                <Col style={{'paddingLeft':'8px'}}>
+                    <div id="setupCon" className="p-3 mb-2">
+                        <div className="d-flex">
+                            <h5>Set your location</h5>
+                            {showLocationAlert ? (
+                                <Alert className="p-1 m-1 mt-0">Please enter a location.</Alert>
+                            ) : (<></>)}
+                        </div>
+                        <div className="d-flex">
+                            <Button id="pageButton" onClick={setCurrLocation} className="p-2">Use my current location</Button>
+                            <div className="m-2">OR</div>
+                            <Form className="d-flex">
+                                <div>
+                                    <Form.Control type="text" id="formTextLine" name="locationForm" onChange={handleLocationChange} value={location} placeholder="Enter Custom Location" />
+                                </div>
+                            </Form>
+                        </div>
                     </div>
-                    <div className="d-flex">
-                        <Button onClick={setCurrLocation} className="p-2">Use my current location</Button>
-                        <div className="m-2">OR</div>
-                        <Form className="d-flex">
+                    <div className="d-flex justify-content-between">
+                        <div className="p-3" id="setupCon" style={{'width':'49%'}}>
                             <div>
-                                <Form.Control type="text" id="formTextLine" name="locationForm" onChange={handleLocationChange} value={location} placeholder="Enter Custom Location" />
+                                <h5>Set your max distance</h5>
                             </div>
-                        </Form>
+                            <div className="d-flex">
+                                <Form className="d-flex">
+                                    <Form.Control type="text" id="formTextLine" name="maxDistanceForm" onChange={handleDistanceChange} value={maxDistance} placeholder="Maximum Distance" />
+                                </Form>
+                            </div>
+                        </div>
+                        <div className="p-3" id="setupCon" style={{'width':'49%'}}>
+                            <div>
+                                <h5>Set your units</h5>
+                            </div>
+                            <div >
+                                <Form className="d-flex">
+                                    <Form.Group>
+                                        <Form.Select name="distanceUnits" id="formTextLine" value={distanceUnits} onChange={handleChangeUnits}>
+                                            <option>Units</option>
+                                            <option value="km">kilometers</option>
+                                            <option value="mi">miles</option>      
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Form>
+                            </div>
+                        </div>
                     </div>
                 </Col>
             </div>
             <div className="d-flex justify-content-center">
-                <Button onClick={submitSetUp} className="col-lg-4 d-flex justify-content-center mt-4">All Set!</Button>
+                <Button id="pageButton" onClick={submitSetUp} className="col-lg-4 d-flex justify-content-center mt-4">All Set!</Button>
             </div>
         </div>
     );

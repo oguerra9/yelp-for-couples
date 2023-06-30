@@ -60,11 +60,27 @@ export async function getNearbyRestaurants(locationCoords) {
 }
 
 export async function getRestaurantData(locationCoords, cuisineTypeId) {
-    console.log(`locationCoords = ${locationCoords}`);
 
-    console.log(`cuisineTypeId = ${cuisineTypeId}`);
-    console.log(locationCoords[0]);
-    console.log(locationCoords[1]);
+    let maxDistance = '10';
+    let distanceUnits = 'mi';
+
+    if (localStorage.hasOwnProperty('maxDistance') && localStorage.getItem('maxDistance') != '') {
+        maxDistance = localStorage.getItem('maxDistance');
+    } 
+
+    if (localStorage.hasOwnProperty('distanceUnits') && localStorage.getItem('distanceUnits') != '') {
+        distanceUnits = localStorage.getItem('distanceUnits');
+    } 
+
+
+    console.log(`max distance = ${maxDistance}`);
+    console.log(`distanceUnits = ${distanceUnits}`);
+
+    // console.log(`locationCoords = ${locationCoords}`);
+
+    // console.log(`cuisineTypeId = ${cuisineTypeId}`);
+    // console.log(locationCoords[0]);
+    // console.log(locationCoords[1]);
 
     let options = {};
 
@@ -75,9 +91,9 @@ export async function getRestaurantData(locationCoords, cuisineTypeId) {
                 longitude: locationCoords[1],
                 limit: '30',
                 currency: 'USD',
-                distance: '2',
+                distance: maxDistance,
                 open_now: 'false',
-                lunit: 'mi',
+                lunit: distanceUnits,
                 lang: 'en_US'
             }
         };
@@ -89,9 +105,9 @@ export async function getRestaurantData(locationCoords, cuisineTypeId) {
                 limit: '30',
                 currency: 'USD',
                 combined_food: cuisineTypeId,
-                distance: '2',
+                distance: maxDistance,
                 open_now: 'false',
-                lunit: 'mi',
+                lunit: distanceUnits,
                 lang: 'en_US'
             }
         };

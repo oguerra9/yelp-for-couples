@@ -44,14 +44,14 @@
   align-self: center;
   font-size: 8px;
   border-radius: 50%;
-  background-color: lightblue;
+  background-color: #fdb800;
   border: 0px;
 }
 
 #formTextLine {
   margin: 3px;
-  background-color: rgb(171, 171, 171);
-  border: 1px solid rgb(93, 93, 93);
+  background-color: rgb(214, 214, 214);
+  border: 1px solid rgb(165, 165, 165);
 }
 
 #contactButton {
@@ -59,4 +59,94 @@
   padding: 0;
   margin-bottom: auto;
   align-self: center;
+}
+
+#filterTextBox {
+  border: 1px solid gray;
+}
+
+#rankingMenu {
+  border: 1px solid gray;
+  padding: 2px;
+  margin-right: 5px;
+}
+
+#routeCon {
+  padding:0%;
+  padding-top: 1%;
+  margin: 0;
+  height: 825px;
+  background-image: url('https://cdn.pixabay.com/photo/2017/06/06/22/46/mediterranean-cuisine-2378758_1280.jpg');
+  /* background-image: url('https://cdn.pixabay.com/photo/2021/01/01/21/56/cooking-5880136_1280.jpg'); */
+  /* background-image: url(''); */
+  /* background-image: url('https://cdn.pixabay.com/photo/2021/03/16/10/04/street-6099209_1280.jpg'); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+  display: flex;
+  justify-content: center;
+}
+
+#pageHead {
+  /* background-color: #fdb800; */
+  /* background-color: #fe8f01; */
+  /* background-color: #8f523f; */
+  background-color: #004475;
+  color:aliceblue;
+}
+
+#pageButton {
+  background-color: #fdb800;
+  border: 1px solid #fdb800;
+  color: black;
+}
+
+#welcomeScreenCon {
+  border: 1px solid #004475;
+  border-radius: 25px;
+  background-color: #004475;
+  padding: 1%;
+  color:aliceblue;
+}
+
+#setupCon {
+  color: black;
+  border: 1px solid aliceblue;
+  border-radius: 15px;
+  background-color: aliceblue;
+  padding: 5px;
+}
+
+#optionScreenCon {
+  border: 1px solid #004475;
+  border-radius: 25px;
+  background-color: #004475;
+  padding: 1%;
+  color:aliceblue;
+}
+
+#optionListCon {
+  color: black;
+  width: 45%;
+  border: 1px solid aliceblue;
+  border-radius: 15px;
+  background-color: aliceblue;
+  padding: 10px;
+}
+
+#voteScreenCon {
+  border: 1px solid #004475;
+  border-radius: 25px;
+  background-color: #004475;
+  padding: 1%;
+  color:aliceblue;
+  display: flex;
+  flex-direction: column;
+}
+
+#voteFormDiv {
+  color: black;
+  border: 1px solid aliceblue;
+  border-radius: 25px;
+  background-color: aliceblue;
 }

@@ -86,15 +86,18 @@ export default function Vote() {
             console.log(voteOptions);
 
             return (
-                <div>
-                    <h4>{voters[currVoterNum]}'s turn to vote</h4>
-                    
-                    <VotingForm 
-                        submitVote={submitVote} 
-                        voteOptions={voteOptions} 
-                        handleChange={handleChange}
-                        formData={userRankings}
-                    />
+                <div id="voteScreenCon">
+                    <h3>Time to Vote!</h3>
+                    <div id="voteFormDiv" className="p-3">
+                        <h4 className="align-self-center">{voters[currVoterNum]}'s turn to vote</h4>
+                        
+                        <VotingForm 
+                            submitVote={submitVote} 
+                            voteOptions={voteOptions} 
+                            handleChange={handleChange}
+                            formData={userRankings}
+                        />
+                    </div>
                 </div>
             );
         } else {
@@ -125,11 +128,13 @@ export default function Vote() {
     }
 
     return (
-        <div>
-            <h3>Time to Vote!</h3>
-            
+        // <div id="voteScreenCon" className="col-6">
+        //     <h3>Time to Vote!</h3>
+        //     {renderVoting()}
+        // </div>
+        <>
             {renderVoting()}
-        </div>
+        </>
     );
 }
 
@@ -141,7 +146,7 @@ function VotingForm(props) {
     let rankNums = Array.from({ length: (props.voteOptions.length) }, (value, index) => (index + 1));
 
     return (
-        <Container>
+        <div className="p-2">
             <h5 className="mb-3">Rank your options with your favorite at {props.voteOptions.length} and your least favorite at 1</h5>
             <Form>
                 {(props.voteOptions).map(option => (
@@ -151,20 +156,20 @@ function VotingForm(props) {
                         controlId={`${option.name}Rank`}
                     >
                         <div className="d-flex">
-                            <Form.Select name={option.name} value={props.formData[option.name]} onChange={props.handleChange}>
+                            <Form.Select id="rankingMenu" name={option.name} value={props.formData[option.name]} onChange={props.handleChange}>
                                 <option> </option>
                                 {(rankNums).map(num => (
                                     <option key={num} value={num} name={option.name}>{num}</option>
                                 ))}
                                 
                             </Form.Select>
-                            <Form.Label className="m-0 col-lg-11">{option.name}</Form.Label>
+                            <Form.Label className="m-0 col-lg-11"><h5>{option.name}</h5></Form.Label>
                         </div>
                     </Form.Group>
                 ))}
-                <Button onClick={props.submitVote}>Submit Vote</Button>
+                <Button id="pageButton" onClick={props.submitVote}>Submit Vote</Button>
             </Form>
-        </Container>
+        </div>
     );
 
 }
@@ -183,12 +188,12 @@ function WinnerDisplay(props) {
     }
 
     return (
-        <div>
-            <h3>{props.winner.name} won!!!</h3>
+        <div id="voteScreenCon" className="col-6">
+            <h3 className="mb-2">{props.winner.name} won!!!</h3>
             {(props.elementType === 'restaurant') ? (
-                <Button onClick={handleOpenWebsite} value={props.winner.website}>Open Website</Button>
+                <Button id="pageButton" onClick={handleOpenWebsite} value={props.winner.website}>Open Website</Button>
             ) : (
-                <Button onClick={handleChooseRes}>Pick a restaurant</Button>
+                <Button id="pageButton" onClick={handleChooseRes}>Pick a restaurant</Button>
             )}
         </div>
     )
