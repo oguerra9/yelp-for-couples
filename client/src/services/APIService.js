@@ -81,6 +81,7 @@ function findFilterOptions(optionsArr) {
     let optionList = [];
 
     optionsArr.forEach((option) => {
+        let optionObj = {};
         let optionName = '';
 
         if ((option.object).hasOwnProperty('tag')) {
@@ -89,8 +90,85 @@ function findFilterOptions(optionsArr) {
         } else {
             optionName = option.object.text;
         }
-        optionList.push(optionName);
+        optionObj['name'] = optionName;
+        optionObj['value'] = option.value;
+        optionList.push(optionObj);
     })
 
     return optionList;
+}
+
+export async function getRestaurantOptions(locationId, cuisineTypeId) {
+    let restaurantList = await getRestaurantData(locationId, cuisineTypeId).then((response) => {
+        let restaurantArr = parseRestaurantData(response);
+
+        return restaurantArr;
+    });
+
+    return restaurantList;
+}
+
+export async function getRestaurantData(locationId, cuisineTypeId) {
+    locationId = parseInt(locationId);
+
+    const options = {
+      method: 'POST',
+      url: 'https://travel-advisor.p.rapidapi.com/restaurants/v2/list',
+      params: {
+        currency: 'USD',
+        units: 'km',
+        lang: 'en_US'
+      },
+      headers: {
+        'content-type': 'application/json',
+        'X-RapidAPI-Key': '652c01dd3emsh0215dfe5dc848f6p1d45d6jsn43f4c72bc42e',
+        'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
+      },
+      data: {
+        geoId: locationId,
+        filters: [
+          {
+            id: 'cuisine',
+            value: [cuisineTypeId]
+          }
+        ]
+      }
+    };
+    
+    try {
+        const response = await axios.request(options);
+        let restaurantList = response.data.data.AppPresentation_queryAppListV2[0].sections;
+        console.log(restaurantList);
+        return restaurantList;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function parseRestaurantData(restaurantData) {
+    console.log(restaurantData);
+    let restaurantList = [];
+
+    restaurantData.forEach((dataLine) => {
+        let restaurant = {};
+        if (dataLine.__typename === 'AppPresentation_SingleCard') {
+            dataLine = dataLine.listSingleCardContent;
+            restaurant.name = removeNumbering(dataLine.cardTitle.string);
+            restaurant.rating = dataLine.bubbleRating.rating;
+            restaurant.tags = dataLine.primaryInfo.text;
+            restaurant.value = dataLine.saveId.id;
+
+            restaurantList.push(restaurant);
+        }
+    })
+
+    console.log(restaurantList);
+    return restaurantList;
+}
+
+function removeNumbering(restaurantName) {
+    let nameArr = restaurantName.split(' ');
+    nameArr.splice(0,1);
+    let nameStr = nameArr.join(' ');
+    return nameStr;
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import { getFilterOptions } from '../services/APIService';
+import { getFilterOptions, getRestaurantOptions } from '../services/APIService';
 
 export default function Options() {
 
@@ -17,6 +17,7 @@ export default function Options() {
     
         console.log(`retrieving options for ${elementType}`);
         getOptions(elementType);
+        setSelectedList([]);
     }, []);
 
     const getOptions = async (elementType) => {
@@ -28,36 +29,36 @@ export default function Options() {
             
         } else if (elementType === 'restaurant') {
             // winning cuisine type will be decided first and stored in local storage
-            let cuisineType = localStorage.getItem('cuisineType');
+            let cuisineType = JSON.parse(localStorage.getItem('cuisineType'));
+            console.log(`cuisine type`);
+            console.log(cuisineType);
+            let restaurantOptions = await getRestaurantOptions(locationId, cuisineType.value);
+            setOptionList(restaurantOptions);
             // cuisine type to be retrieved from local storage and used in api call
-            setOptionList([`${cuisineType} Restaurant #1`, `${cuisineType} Restaurant #2`, `${cuisineType} Restaurant #3`, `${cuisineType} Restaurant #4`]);
         }
     };
 
     const handleAddOption = (event) => {
-        let addedOption = event.target.name;
+        let addedIndex = event.target.name;
         let currOptions = optionList;
-        let addedIndex = currOptions.indexOf(addedOption);
+        setSelectedList([...selectedList, currOptions[addedIndex]]);
         currOptions.splice(addedIndex, 1);
 
         setOptionList(currOptions);
-
-        setSelectedList([...selectedList, addedOption]);
     };
 
     const handleRemoveSelected = (event) => {
-        let removedSelected = event.target.name;
+        let removedIndex = event.target.name;
         let currSelected = selectedList;
-        let removedIndex = currSelected.indexOf(removedSelected);
+        setOptionList([...optionList, currSelected[removedIndex]]);
         currSelected.splice(removedIndex, 1);
 
         setSelectedList(currSelected);
-
-        setOptionList([...optionList, removedSelected]);
     };
 
     const submitSelected = (event) => {
-        localStorage.setItem(`${elementType}Selected`, selectedList);
+        console.log(JSON.stringify(selectedList));
+        localStorage.setItem(`${elementType}Selected`, JSON.stringify(selectedList));
 
         window.location.pathname = `/vote/${elementType}`;
     }
@@ -92,10 +93,10 @@ function ElementList(props) {
 
     return (
         <Container className="mb-2">
-            {(props.displayList).map(option => (
-                <div key={option} className="d-flex mb-2">
-                    <Button id="optionButton" name={option} onClick={props.handleButtonClick}>{props.buttonIcon}</Button>
-                    <h5 className="m-1">{option}</h5>                            
+            {(props.displayList).map((option, index) => (
+                <div key={option.value} className="d-flex mb-2">
+                    <Button id="optionButton" name={index} onClick={props.handleButtonClick}>{props.buttonIcon}</Button>
+                    <h5 className="m-1">{option.name}</h5>                            
                 </div>
             ))}
         </Container>
