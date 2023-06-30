@@ -216,10 +216,42 @@ function WinnerDisplay(props) {
         <div id="voteScreenCon" className="col-6">
             <h3 className="mb-2">{props.winner.name} won!!!</h3>
             {(props.elementType === 'restaurant') ? (
-                <Button id="pageButton" className="col-4 align-self-center mt-3" onClick={handleOpenWebsite} value={props.winner.website}>Open Website</Button>
+                <div className="d-flex flex-column">
+                <div className="d-flex justify-content-center">
+                    {(props.winner.hasOwnProperty('phone') && props.winner.phone != '') ? (
+                        <h5 className="m-3 mb-1 align-self-center">Call: {props.winner.phone}</h5>
+                    ) : (<></>)}
+                    
+
+                    {(props.winner.hasOwnProperty('website') && props.winner['website'] != '') ? (
+                        <Button id="pageButton" className="align-self-center m-3 mb-1 p-3 pt-1 pb-1" onClick={handleOpenWebsite} value={props.winner.website}>Open Website</Button>
+                    ) : (<></>)} 
+                </div>
+
+                    {(props.winner.hasOwnProperty('photo')) ? (
+                        <DisplayPhotos winnerPhotos={props.winner.photo} />
+                    ) : (<></>)}
+
+                    
+
+                </div>
             ) : (
                 <Button id="pageButton" className="col-4 align-self-center mt-3" onClick={handleChooseRes}>Pick a restaurant</Button>
             )}
+
+        </div>
+    )
+}
+
+function DisplayPhotos(props) {
+    let photoArr = props.winnerPhotos;
+    let displayImage = photoArr.images.medium;
+    let imgHeight = displayImage.height;
+    let imgWidth = displayImage.width;
+    let imgSrc = displayImage.url;
+    return (
+        <div style={{'height': {imgHeight}, 'width': {imgWidth}}} className='align-self-center m-2'>
+            <img src={imgSrc} style={{'height': {imgHeight}, 'width': {imgWidth}}} />
         </div>
     )
 }
