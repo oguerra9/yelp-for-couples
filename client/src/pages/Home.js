@@ -116,7 +116,7 @@ async function saveCurrentLocation() {
         console.log(locationName);
         await getGeoId(locationName).then((response) => {
             console.log(response);
-            localStorage.setItem('locationId', response.locationId);
+            //localStorage.setItem('locationId', response.locationId);
             window.location.pathname = '/options/cuisine';
         });
     };
@@ -131,10 +131,9 @@ async function saveCurrentLocation() {
 async function saveCustomLocation(locationName) {
     console.log(`saving custom location: ${locationName}`);
     await getGeoId(locationName).then((response) => {
-        localStorage.setItem('locationId', response.locationId);
+        //localStorage.setItem('locationId', response.locationId);
         localStorage.setItem('locationCoords', response.coords);
         window.location.pathname = '/options/cuisine';
     });
-    //let customCoords = await getLocationCoords(locationName).then((response) => console.log(response));
-    //localStorage.setItem('locationCoords', customCoords);
+
 }
