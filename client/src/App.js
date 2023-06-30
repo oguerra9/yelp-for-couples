@@ -12,14 +12,29 @@ function App() {
 
   const [currPage, setCurrentPage] = useState('');
 
+  
   useEffect(() => {
-    if (window.location.pathname.split('/')[2] === 'options') {
+    if (!localStorage.hasOwnProperty('pathname')) {
+      console.log(`resetting pathname`);
+      localStorage.setItem('pathname', '/');
+    }
+    // console.log(window.location.pathname.split('/')[2]);
+    // if (window.location.pathname.split('/')[2] === 'options') {
+    //   setCurrentPage('Options');
+    // } else if (window.location.pathname.split('/')[2] === 'vote') {
+    //   setCurrentPage('Vote');
+    // } else {
+    //   setCurrentPage('Home')
+    // }
+    //console.log(localStorage.getItem('pathname').split('/')[1]);
+    if (localStorage.getItem('pathname').split('/')[1] === 'options') {
       setCurrentPage('Options');
-    } else if (window.location.pathname.split('/')[2] === 'vote') {
+    } else if (localStorage.getItem('pathname').split('/')[1] === 'vote') {
       setCurrentPage('Vote');
     } else {
       setCurrentPage('Home')
     }
+
 
   }, []);
 

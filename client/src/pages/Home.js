@@ -52,6 +52,7 @@ export default function Home(props) {
         localStorage.setItem('distanceUnits', distanceUnits);
         localStorage.setItem('maxDistance', maxDistance);
 
+        localStorage.setItem('pathname', '/options/cuisine');
         if (location === '') {
             handleShowLocationAlert();
         } else if (location === '📍Current Location') {
@@ -171,7 +172,8 @@ async function saveCurrentLocation(handlePageChange) {
             console.log(response);
             //localStorage.setItem('locationId', response.locationId);
             
-            window.location.pathname = '/yelp-for-couples/options/cuisine';
+            //window.location.pathname = '/yelp-for-couples/options/cuisine';
+            
             //localStorage.setItem('pathname','/options/cuisine');
             handlePageChange('Options');
         });
@@ -189,8 +191,8 @@ async function saveCustomLocation(locationName, handlePageChange) {
     await getGeoId(locationName).then((response) => {
         //localStorage.setItem('locationId', response.locationId);
         localStorage.setItem('locationCoords', response.coords);
-        window.location.pathname = '/yelp-for-couples/options/cuisine';
-        //localStorage.setItem('pathname','/options/cuisine');
+        //window.location.pathname = '/yelp-for-couples/options/cuisine';
+        localStorage.setItem('pathname','/options/cuisine');
         handlePageChange('Options');
     });
 

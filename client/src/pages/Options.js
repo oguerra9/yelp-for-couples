@@ -19,8 +19,12 @@ export default function Options(props) {
     const handleShowAlert = () => setShowAlert(true);
     const handleHideAlert = () => setShowAlert(false);
 
-    const [elementType, setElementType] = useState(window.location.pathname.split('/')[3]);
-
+    //localStorage.setItem('pathname', '/');
+    // const [elementType, setElementType] = useState(window.location.pathname.split('/')[3]);
+    console.log(localStorage.getItem('pathname').split('/')[2]);
+    const [elementType, setElementType] = useState(localStorage.getItem('pathname').split('/')[2]);
+    console.log('elementType');
+    console.log(elementType);
     const [locationCoords, setLocationCoords] = useState(localStorage.getItem('locationCoords').split(','));
 
     const [show, setShow] = useState(false);
@@ -115,13 +119,15 @@ export default function Options(props) {
             handleShowAlert();
         } else if (selectedList.length === 1) {
             localStorage.setItem(`${elementType}Type`, JSON.stringify(selectedList));
-            window.location.pathname = `yelp-for-couples/vote/${elementType}`;
+            //window.location.pathname = `yelp-for-couples/vote/${elementType}`;
+            localStorage.setItem('pathname', `/vote/${elementType}`);
             props.handlePageChange('Vote');
         } else {
             console.log(JSON.stringify(selectedList));
             localStorage.setItem(`${elementType}Selected`, JSON.stringify(selectedList));
 
-            window.location.pathname = `/yelp-for-couples/vote/${elementType}`;
+            //window.location.pathname = `/yelp-for-couples/vote/${elementType}`;
+            localStorage.setItem('pathname', `/vote/${elementType}`);
             props.handlePageChange('Vote');
         }
         

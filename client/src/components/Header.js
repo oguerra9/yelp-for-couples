@@ -4,7 +4,8 @@ import Button from 'react-bootstrap/Button';
 export default function Header(props) {
     const resetApp = () => {
         localStorage.clear();
-        window.location.pathname = '/yelp-for-couples/';
+        //window.location.pathname = '/yelp-for-couples/';
+        localStorage.setItem('pathname', '/');
         props.handlePageChange('Home');
     }
     return (

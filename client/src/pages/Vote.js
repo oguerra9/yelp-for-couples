@@ -6,7 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import RestaurantDisplayLine from '../components/RestaurantDisplayLine';
 
 export default function Vote(props) {
-    const [elementType, setElementType] = useState(window.location.pathname.split('/')[3]);
+    const [elementType, setElementType] = useState(localStorage.getItem('pathname').split('/')[2]);
     const [voteOptions, setVoteOptions] = useState(JSON.parse(localStorage.getItem(`${elementType}Selected`)));
     const [rankSum, setRankSum] = useState(new Array(voteOptions.length).fill(0));
     const [voters, setVoters] = useState(localStorage.getItem('groupNames').split(','));
@@ -201,7 +201,8 @@ function WinnerDisplay(props) {
     // props = {elementType, winner}
 
     const handleChooseRes = () => { 
-        window.location.pathname = '/yelp-for-couples/options/restaurant';
+        //window.location.pathname = '/yelp-for-couples/options/restaurant';
+        localStorage.setItem('pathname', '/options/restaurant');
         props.handlePageChange('Options');
     };
 
