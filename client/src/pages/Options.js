@@ -9,7 +9,7 @@ import RestaurantDisplayLine from '../components/RestaurantDisplayLine';
 
 import { getRestaurantOptions, getCustomFilterOptions, getNearbyRestaurants } from '../services/APIService';
 
-export default function Options() {
+export default function Options(props) {
 
     const [optionList, setOptionList] = useState([]);
     const [unfilteredList, setUnfilteredList] = useState([]);
@@ -116,11 +116,13 @@ export default function Options() {
         } else if (selectedList.length === 1) {
             localStorage.setItem(`${elementType}Type`, JSON.stringify(selectedList));
             window.location.pathname = `yelp-for-couples/vote/${elementType}`;
+            props.handlePageChange('Vote');
         } else {
             console.log(JSON.stringify(selectedList));
             localStorage.setItem(`${elementType}Selected`, JSON.stringify(selectedList));
 
             window.location.pathname = `/yelp-for-couples/vote/${elementType}`;
+            props.handlePageChange('Vote');
         }
         
     }

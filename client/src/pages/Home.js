@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import { getGeoId, reverseGeocode } from '../services/APIService';
 
-export default function Home() {
+export default function Home(props) {
     const [userNames, setUserNames] = useState(['user0', 'user1']);
     const [groupMembers, setGroupMembers] = useState({});
     const [groupMemberData, setGroupMemberData] = useState({});
@@ -55,10 +55,10 @@ export default function Home() {
         if (location === '') {
             handleShowLocationAlert();
         } else if (location === '📍Current Location') {
-            saveCurrentLocation();
+            saveCurrentLocation(props.handlePageChange);
         } else {
             console.log(`saving custom location name = ${location}`);
-            saveCustomLocation(location);
+            saveCustomLocation(location, props.handlePageChange);
         }
 
         //window.location.pathname = '/options/cuisine';
@@ -153,7 +153,7 @@ export default function Home() {
 }
 
 
-async function saveCurrentLocation() {
+async function saveCurrentLocation(handlePageChange) {
 
     const successCallback = async (position) => {
         console.log(`position data: ${position}`);
@@ -170,7 +170,10 @@ async function saveCurrentLocation() {
         await getGeoId(locationName).then((response) => {
             console.log(response);
             //localStorage.setItem('locationId', response.locationId);
+            
             window.location.pathname = '/yelp-for-couples/options/cuisine';
+            //localStorage.setItem('pathname','/options/cuisine');
+            handlePageChange('Options');
         });
     };
 
@@ -181,12 +184,14 @@ async function saveCurrentLocation() {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 }
 
-async function saveCustomLocation(locationName) {
+async function saveCustomLocation(locationName, handlePageChange) {
     console.log(`saving custom location: ${locationName}`);
     await getGeoId(locationName).then((response) => {
         //localStorage.setItem('locationId', response.locationId);
         localStorage.setItem('locationCoords', response.coords);
         window.location.pathname = '/yelp-for-couples/options/cuisine';
+        //localStorage.setItem('pathname','/options/cuisine');
+        handlePageChange('Options');
     });
 
 }
