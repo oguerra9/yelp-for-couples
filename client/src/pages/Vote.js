@@ -142,17 +142,17 @@ function WinnerDisplay(props) {
         window.location.pathname = '/options/restaurant';
     };
 
-    const handleOpenMenu = () => {
+    const handleOpenMenu = (event) => {
         // ideally restaurant data will all be stored in local storage and can be parsed into an object
         // hopefully can retrieve either menu or website data from api call and open link in new tab
-        window.open('https://google.com'); // placefiller
+        window.open(event.target.value); // placefiller
     }
 
     return (
         <div>
             <h3>{props.winner.name} won!!!</h3>
             {(props.elementType === 'restaurant') ? (
-                <Button onClick={handleOpenMenu}>View Menu</Button>
+                <Button onClick={handleOpenMenu} value={props.winner.website}>Open Website</Button>
             ) : (
                 <Button onClick={handleChooseRes}>Pick a restaurant</Button>
             )}

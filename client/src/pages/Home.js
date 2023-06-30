@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import { getGeoId } from '../services/APIService';
+import { getGeoId, reverseGeocode } from '../services/APIService';
 
 export default function Home() {
     const [userNames, setUserNames] = useState(['user0', 'user1']);
@@ -34,14 +34,14 @@ export default function Home() {
         localStorage.setItem('groupNames', groupNames);
 
         
-        if (location != '📍Current Location') {
+        if (location === '📍Current Location') {
+            saveCurrentLocation();
+        } else {
             console.log(`saving custom location name = ${location}`);
-            // await saveCustomLocation(location).then((response) => {
-            //     localStorage.setItem('locationId', response);
-            //     window.location.pathname = '/options/cuisine';
-            // });
             saveCustomLocation(location);
         }
+
+        //window.location.pathname = '/options/cuisine';
 
         
     };
@@ -49,7 +49,6 @@ export default function Home() {
     const setCurrLocation = (event) => {
         console.log('saving current location');
         setLocation('📍Current Location');
-        saveCurrentLocation();
     };
 
 
@@ -83,7 +82,7 @@ export default function Home() {
                         <h5>Set your location</h5>
                     </div>
                     <div>
-                        {/* <Button onClick={setCurrLocation}>Use my current location</Button> */}
+                        <Button onClick={setCurrLocation}>Use my current location</Button>
                         <Form className="d-flex">
                             <div className="col-lg-4">
                                 <Form.Control type="text" id="formTextLine" name="locationForm" onChange={handleLocationChange} value={location} placeholder="location" />
@@ -100,14 +99,24 @@ export default function Home() {
 }
 
 
-function saveCurrentLocation() {
+async function saveCurrentLocation() {
 
-    const successCallback = (position) => {
+    const successCallback = async (position) => {
         console.log(`position data: ${position}`);
         let userCoords = [position.coords.latitude, position.coords.longitude];
     
         console.log(`position: <lat: ${userCoords[0]}, lon: ${userCoords[1]}>`);
         localStorage.setItem('locationCoords', userCoords);
+
+        let locationName = await reverseGeocode(userCoords).then((response) => {
+            console.log(`location name = ${response}`);
+            return response;
+        });
+
+        await getGeoId(locationName).then((response) => {
+            localStorage.setItem('locationId', response.locationId);
+            window.location.pathname = '/options/cuisine';
+        });
     };
 
     const errorCallback = (error) => {
@@ -120,9 +129,9 @@ function saveCurrentLocation() {
 async function saveCustomLocation(locationName) {
     console.log(`saving custom location: ${locationName}`);
     await getGeoId(locationName).then((response) => {
-        localStorage.setItem('locationId', response);
+        localStorage.setItem('locationId', response.locationId);
+        localStorage.setItem('locationCoords', response.coords);
         window.location.pathname = '/options/cuisine';
-        //return response;
     });
     //let customCoords = await getLocationCoords(locationName).then((response) => console.log(response));
     //localStorage.setItem('locationCoords', customCoords);
