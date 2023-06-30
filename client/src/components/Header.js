@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 export default function Header() {
     const resetApp = () => {
         localStorage.clear();
-        window.location.pathname = '/';
+        window.location.pathname = '/yelp-for-couples/';
     }
     return (
         <div className="d-flex justify-content-between p-4" id="pageHead">

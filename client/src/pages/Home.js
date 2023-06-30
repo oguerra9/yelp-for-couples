@@ -170,7 +170,7 @@ async function saveCurrentLocation() {
         await getGeoId(locationName).then((response) => {
             console.log(response);
             //localStorage.setItem('locationId', response.locationId);
-            window.location.pathname = '/options/cuisine';
+            window.location.pathname = '/yelp-for-couples/options/cuisine';
         });
     };
 
@@ -186,7 +186,7 @@ async function saveCustomLocation(locationName) {
     await getGeoId(locationName).then((response) => {
         //localStorage.setItem('locationId', response.locationId);
         localStorage.setItem('locationCoords', response.coords);
-        window.location.pathname = '/options/cuisine';
+        window.location.pathname = '/yelp-for-couples/options/cuisine';
     });
 
 }
