@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 export default function Vote() {
     const [elementType, setElementType] = useState(window.location.pathname.split('/')[2]);
     const [voteOptions, setVoteOptions] = useState(JSON.parse(localStorage.getItem(`${elementType}Selected`)));
-    const [rankSum, setRankSum] = useState([]);
+    const [rankSum, setRankSum] = useState(new Array(voteOptions.length).fill(0));
     const [voters, setVoters] = useState(localStorage.getItem('groupNames').split(','));
     const [userRankings, setUserRankings] = useState('');
     const [groupRankings, setGroupRankings] = useState({});
@@ -26,22 +26,6 @@ export default function Vote() {
             ...
         }
     */
-
-    useEffect(() => {
-        console.log('use effect');
-
-        // if (voteOptions.length > 1) {
-        //     setRankSum(new Array(voteOptions.length).fill(0));
-        // } else {
-        //     return (
-        //         <WinnerDisplay 
-        //             elementType={elementType}
-        //             winner={winner}
-        //         />
-        //     );      
-        // }
-        
-    }, []);
 
     const clearRank = () => {
         let clearedRank = {};
@@ -68,11 +52,15 @@ export default function Vote() {
 
     const submitVote = () => {
         let currSum = rankSum;
+        console.log(rankSum);
         console.log(`user rankings: ${JSON.stringify(userRankings)}`);
         for (let i = 0; i < voteOptions.length; i++) {
             let option = voteOptions[i];
+            console.log(`option`);
+            console.log(option);
             currSum[i] += parseInt(userRankings[option.name])
         }
+        console.log(currSum);
         setRankSum(currSum);
         setGroupRankings({...groupRankings, [voters[currVoterNum]] : userRankings}); 
         clearRank();
@@ -81,15 +69,10 @@ export default function Vote() {
     };
 
     const handleChange = (event) => {
-        //console.log(event.target);
         const name = event.target.name;
         const value = event.target.value;
-        //const { name, value } = event.target;
         setUserRankings({ ...userRankings, [name]: value });
 
-        console.log(`user = ${currVoterNum}`);
-        console.log(`name = ${name}`);
-        console.log(`value = ${value}`);
     };
 
     const renderVoting = () => {
@@ -152,6 +135,8 @@ export default function Vote() {
 
 function VotingForm(props) {
     // props = {submitVote, voteOptions, handleChange, formData
+    console.log(`form data`);
+    console.log(props.formData);
 
     let rankNums = Array.from({ length: (props.voteOptions.length) }, (value, index) => (index + 1));
 
@@ -164,14 +149,12 @@ function VotingForm(props) {
                         className="mb-3" 
                         key={option.value} 
                         controlId={`${option.name}Rank`}
-                        value={props.formData[option.name]}
-                        onChange={props.handleChange}
                     >
                         <div className="d-flex">
-                            <Form.Select name={option.name}>
+                            <Form.Select name={option.name} value={props.formData[option.name]} onChange={props.handleChange}>
                                 <option> </option>
-                                {(rankNums).map(index => (
-                                    <option key={index} value={index} name={option.name}>{index}</option>
+                                {(rankNums).map(num => (
+                                    <option key={num} value={num} name={option.name}>{num}</option>
                                 ))}
                                 
                             </Form.Select>
@@ -193,17 +176,17 @@ function WinnerDisplay(props) {
         window.location.pathname = '/options/restaurant';
     };
 
-    const handleOpenMenu = (event) => {
+    const handleOpenWebsite = (event) => {
         // ideally restaurant data will all be stored in local storage and can be parsed into an object
         // hopefully can retrieve either menu or website data from api call and open link in new tab
-        window.open(event.target.value); // placefiller
+        window.open(event.target.value); 
     }
 
     return (
         <div>
             <h3>{props.winner.name} won!!!</h3>
             {(props.elementType === 'restaurant') ? (
-                <Button onClick={handleOpenMenu} value={props.winner.website}>Open Website</Button>
+                <Button onClick={handleOpenWebsite} value={props.winner.website}>Open Website</Button>
             ) : (
                 <Button onClick={handleChooseRes}>Pick a restaurant</Button>
             )}

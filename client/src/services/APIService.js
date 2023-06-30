@@ -10,12 +10,10 @@ export async function getGeoId(locationName) {
 
     try {
         const response = await http.get('/locations/search', options);
-        console.log('response');
         console.log(response);
         let lat = response.data.data[0].result_object.latitude;
         let lon = response.data.data[0].result_object.longitude;
-        let locationData = {};
-        //locationData['locationId'] = response.data.data[0].result_object.location_id;
+        let locationData = [];
         locationData['coords'] = [lat, lon];
         return locationData;
     } catch (error) {
@@ -48,13 +46,7 @@ export function getCustomFilterOptions(optionArr, fieldName) {
     return existingValues;
 }
 
-// export async function getRestaurantOptions(locationId, cuisineTypeId) {
-    // let restaurantList = await getRestaurantData(locationId, cuisineTypeId).then((response) => {
-    //     let restaurantArr = parseRestaurantData(response);
 
-    //     return restaurantArr;
-    // });
-// }
 export async function getRestaurantOptions(locationCoords, cuisineTypeId) {
     let restaurantList = await getRestaurantData(locationCoords, cuisineTypeId);
 

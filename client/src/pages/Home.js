@@ -135,6 +135,5 @@ async function saveCustomLocation(locationName) {
         localStorage.setItem('locationCoords', response.coords);
         window.location.pathname = '/options/cuisine';
     });
-    //let customCoords = await getLocationCoords(locationName).then((response) => console.log(response));
-    //localStorage.setItem('locationCoords', customCoords);
+
 }
